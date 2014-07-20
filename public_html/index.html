@@ -17,7 +17,7 @@
 </head>
 <body>
     <div>
-        <button id='startCW' onclick="CONWAY.startGame();">Random Conway's Game of      Life</button> | <button id='resetCW' onclick="    CONWAY.resetGame();">Reset</button>
+        <button id='startCW' onclick="CONWAY.startGame();">Random Conway's Game of Life</button> 
         <div class='conway' id='conway'></div>
     </div>
 
@@ -104,7 +104,7 @@
 
 
 
-        var CONWAY_GLOB_MAX_X = 99;
+        var CONWAY_GLOB_MAX_X = 1119;
         var CONWAY_GLOB_MAX_Y = 99;
         var randomInit = function (board) {
             for (var y = 0; y <= CONWAY_GLOB_MAX_Y; y++) {
@@ -149,9 +149,7 @@
         };
         var conwayRandIntervalId = null;
         var conwayBody = document.getElementById('conway');
-        my.resetGame = function () {
-            this.resetConway(conwayRandIntervalId, conwayBody);
-        };
+
         my.startGame = function () {
             conwayRandIntervalId = this.initConway(conwayRandIntervalId, conwayBody);
         }
