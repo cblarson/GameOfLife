@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style type="text/css">
+        div.conway {
+            overflow: hidden;
+            font-family: courier;
+            float: left;
+            width: 800px;
+            height: 488px;
+            background-color: #000;
+            font-size: 10px;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <button id='startCW' onclick="CONWAY.startGame();">Random Conway's Game of      Life</button> | <button id='resetCW' onclick="    CONWAY.resetGame();">Reset</button>
+        <div class='conway' id='conway'></div>
+    </div>
+
+    <script type="text/javascript">
+    var CONWAY = (function () {
+        var my = {};
+        var Board = function () { //create a game board object
+            this.cells = {};  //collection object to hold cell coordinates
+        };
+
+        var Cell = function (x, y, alive) { //create a cell object
+            this.x = x; //the x coordinate for the cell
+            this.y = y; //the y coordinate for the cell
+            this.alive = alive;  //state to show if the cell is alive or dead
+        };
+
+
+        Cell.prototype = { //add isAlive method to the cell object
+            isAlive: function () {
+                return this.alive; //return cell's state
+            }
+        };
+
+        Board.prototype = {
+            addCell: function (cell) {  //the method to add a cell to the board
+                this.cells[getCellPrepresentation(cell.x, cell.y)] = cell;
+            },
+            getCellAt: function (x, y) {  //returns the value of the specified coordinates
+                return this.cells[getCellPrepresentation(x, y)];
+            },
+            getAliveNeighbors: function (cell) { //check nearby cells for states according to the rules
+                var x = cell.x;
+                var y = cell.y;
+                var aliveCells = 0;
+
+                for (var i = -1; i < 2; i++) { //look for live cells in the vicinity
+                    for (var j = -1; j < 2; j++) {
+                        if (i === 0 && i === j) {
+                            continue;
+                        }
+                        var currentCell = this.getCellAt(x + i, y + j);
+                        if (currentCell && currentCell.isAlive()) {
+                            aliveCells++;
+                        }
+                    }
+                }
+                return aliveCells; //return the number of live cells
+            },
+            calculateNextState: function (cell) {
+                var tempCell = new Cell(cell.x, cell.y, cell.alive);
+                var livingNeighbors = this.getAliveNeighbors(cell);
+
+                if (cell.alive) {
+                    if (livingNeighbors === 2 || livingNeighbors === 3) {
+                        tempCell.alive = true;
+                    }
+                    else {
+                        tempCell.alive = false;
+                    }
+                }
+                else {
+                    if (livingNeighbors === 3) {
+                        tempCell.alive = true;
+                    }
+                }
+                return tempCell;
+            },
+            step: function () {
+                var cells = this.cells;
+                var tempBoard = {};
+
+                for (var c in this.cells) {
+                    var cell = this.cells[c];
+                    var newCell = this.calculateNextState(cell);
+                    tempBoard[c] = newCell;
+                }
+                this.cells = tempBoard;
+            }
+        };
+
+        function getCellPrepresentation(x, y) {
+            return "x" + x + "y" + y;
+        }
+
+
+
+        var CONWAY_GLOB_MAX_X = 99;
+        var CONWAY_GLOB_MAX_Y = 99;
+        var randomInit = function (board) {
+            for (var y = 0; y <= CONWAY_GLOB_MAX_Y; y++) {
+                for (var x = 0; x <= CONWAY_GLOB_MAX_X; x++) {
+                    board.addCell(new Cell(x, y, (Math.random() > 0.8)));
+                }
+            }
+        };
+        var draw = function (board, canvas) {
+            var output = ' ';
+            for (var y = 0; y <= CONWAY_GLOB_MAX_X; y++) {
+                for (var x = 0; x <= CONWAY_GLOB_MAX_Y; x++) {
+                    var cell = board.getCellAt(x, y);
+                    output += cell && cell.isAlive() ? 'O' : '&nbsp;';
+                }
+                output += '<br/>';
+            }
+            canvas.innerHTML=(output);
+        };
+
+        var doConway = function (body) {
+            var board = new Board(); //create new board
+
+            randomInit(board); //initialize board with random dead and alive cells
+
+            draw(board, body); //draw the board
+
+            return setInterval(function () { //update every 130 ms
+                board.step();
+                draw(board, body);
+            }, 130);
+        };
+
+        my.initConway = function (id, body) {
+            clearInterval(id);
+            return doConway(body);
+        };
+
+        my.resetConway = function (id, body) {
+            body.empty();
+            clearInterval(id);
+        };
+        var conwayRandIntervalId = null;
+        var conwayBody = document.getElementById('conway');
+        my.resetGame = function () {
+            this.resetConway(conwayRandIntervalId, conwayBody);
+        };
+        my.startGame = function () {
+            conwayRandIntervalId = this.initConway(conwayRandIntervalId, conwayBody);
+        }
+        return my;
+    }());
+
+
+    </script>
+
+
+</body>
+</html>
