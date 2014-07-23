@@ -18,6 +18,7 @@
 <body>
     <div>
         <button id='startCW' onclick="CONWAY.startGame();">Random Conway's Game of Life</button> 
+        <p>Generation Count:<span style= background-color:white id="count"></span> 
         <div class='conway' id='conway'></div>
     </div>
 
@@ -124,7 +125,7 @@
             }
             canvas.innerHTML=(output);
         };
-
+        var genCounter = 0;
         var doConway = function (body) {
             var board = new Board(); //create new board
 
@@ -135,7 +136,9 @@
             return setInterval(function () { //update every 130 ms
                 board.step();
                 draw(board, body);
-            }, 130);
+                genCounter++;
+                document.getElementById("count").innerHTML = genCounter;
+            }, 30);
         };
 
         my.initConway = function (id, body) {
