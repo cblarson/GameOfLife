@@ -18,7 +18,8 @@
 <body>
     <div>
         <button id='startCW' onclick="CONWAY.startGame();">Random Conway's Game of Life</button> 
-        <button id='changeColor' onclick="CONWAY.changeBackgroundColor();">Change Color</button>
+        <button id='changeBackgroundColor' onclick="CONWAY.changeBackgroundColor();">Random Background Color</button>
+        <button id='changeCellColor' onclick="CONWAY.changeCellColor();">Random Cell Color</button>
         <p>Generation Count:<span style= background-color:white id="count"></span> 
         <div class='conway' id='conway'></div>
     </div>
@@ -68,7 +69,7 @@
                 }
                 return aliveCells; //return the number of live cells
             },
-            calculateNextState: function (cell) {
+            calculateNextState: function (cell) {  //function to figure out the next state of a cell
                 var tempCell = new Cell(cell.x, cell.y, cell.alive);
                 var livingNeighbors = this.getAliveNeighbors(cell);
 
@@ -108,7 +109,7 @@
 
         var CONWAY_GLOB_MAX_X = 200;
         var CONWAY_GLOB_MAX_Y = 200;
-        var randomInit = function (board) {
+        var randomInit = function (board) { //function to initialize board with random cells
             for (var y = 0; y <= CONWAY_GLOB_MAX_Y; y++) {
                 for (var x = 0; x <= CONWAY_GLOB_MAX_X; x++) {
                     board.addCell(new Cell(x, y, (Math.random() > 0.9)));
@@ -155,12 +156,12 @@
         var conwayRandIntervalId = null;
         var conwayBody = document.getElementById('conway');
 
-        my.startGame = function () {
+        my.startGame = function () { //function that will initialize a new game board
             conwayRandIntervalId = this.initConway(conwayRandIntervalId, conwayBody);
             genCounter = 0;
         };
         
-        function getRandomColor() {
+        function getRandomColor() { //function to generate a random color
             var letters = '0123456789ABCDEF'.split('');
             var color = '#';
             for (var i = 0; i < 6; i++ ) {
@@ -169,9 +170,13 @@
             return color;
         }
         
-        my.changeBackgroundColor = function () {
+        my.changeBackgroundColor = function () { //function to generate a randome background color
             document.getElementById('conway').style.backgroundColor = getRandomColor();                
-        }    
+        }   
+        
+        my.changeCellColor = function () { //function to generate a random cell color
+            document.getElementById('conway').style.color = getRandomColor();
+        }
         
         return my;
         
